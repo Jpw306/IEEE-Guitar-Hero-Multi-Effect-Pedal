@@ -1,40 +1,45 @@
 #include "DaisyDuino.h"
 #include "USPSDelay.h"
 
-void USPSDelay::Process(float input, float *outL, float *outR, int mode) {
-  del_out = del.Read();
-  sig_out = del_out + input;
-  feedback = (del_out * 0.5f) + input;
+void USPSDelay::Process(float inputL, float inputR, float *outL, float *outR, int mode) {
+  del_outL = delL.Read();
+  del_outR = delR.Read();
+  sig_outL = del_outL + inputL;
+  sig_outR = del_outR + inputR;
+  feedbackL = (del_outL * 0.5f) + inputL;
+  feedbackR = (del_outR * 0.5f) + inputR;
 
   // Write to the delay
-  del.Write(feedback);
+  delL.Write(feedbackL);
+  delR.Write(feedbackR);
 
   switch(mode) {
     // Normal Delay
     case 0:
-      *outL = sig_out;
-      *outR = sig_out;
+      *outL = sig_outL;
+      *outR = sig_outR;
       break;
     // Ping Pong Delay
     case 1:
       if(tick.Process()) {
         toggleOutput = !toggleOutput;
       }
-      *outL = toggleOutput * sig_out;
-      *outR = !toggleOutput * sig_out;
+      *outL = toggleOutput * sig_outL;
+      *outR = !toggleOutput * sig_outR;
       break;
     // Panning Delay
     case 2:
-      *outL = osc.Process() * sig_out;
+      *outL = osc.Process() * sig_outL;
       osc.PhaseAdd(0.5);  // Phase shift for cosine
-      *outR = osc.Process() * sig_out;
+      *outR = osc.Process() * sig_outR;
       osc.PhaseAdd(0.5); // Reset phase shift
       break;
   }
 }
 
 void USPSDelay::Initialize(float sample_rate) {
-  del.SetDelay(sample_rate * 0.25f);
+  delL.SetDelay(sample_rate * 0.25f);
+  delR.SetDelay(sample_rate * 0.25f);
 
   // Oscillator for Panning delay
   osc.Init(sample_rate);

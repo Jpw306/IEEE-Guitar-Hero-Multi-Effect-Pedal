@@ -6,8 +6,9 @@ class RingModulation {
     ~RingModulation() {}
 
     void Initialize(float sample_rate);
-    float Process(float input);
+    void Process(float inputL, float inputR, float *outL, float *outR);
 
   private:
     Oscillator carrier;
+    float carrier_signal;
 };

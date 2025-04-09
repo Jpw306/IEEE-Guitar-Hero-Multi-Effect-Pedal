@@ -8,12 +8,12 @@ class USPSDelay {
     ~USPSDelay() {}
 
     void Initialize(float sample_rate);
-    void Process(float input, float *outL, float *outR, int mode);
+    void Process(float inputL, float inputR, float *outL, float *outR, int mode);
 
   private:
-    DelayLine<float, MAX_DELAY> del; // delayline of MAX_DELAY number of floats
+    DelayLine<float, MAX_DELAY> delL, delR; // delayline of MAX_DELAY number of floats
     Oscillator osc;
     Metro tick;
-    float feedback, del_out, sig_out;
+    float feedbackL, feedbackR, del_outL, del_outR, sig_outL, sig_outR;
     bool toggleOutput;
 };

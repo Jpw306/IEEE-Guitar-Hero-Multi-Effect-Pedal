@@ -1,9 +1,10 @@
 #include "DaisyDuino.h"
 #include "RingModulation.h"
 
-float RingModulation::Process(float input) {
-  float carrier_signal = carrier.Process();
-  return input * carrier_signal;
+void RingModulation::Process(float inputL, float inputR, float *outL, float *outR) {
+  carrier_signal = carrier.Process();
+  *outL = inputL * carrier_signal;
+  *outR = inputR * carrier_signal;
 }
 
 void RingModulation::Initialize(float sample_rate) {

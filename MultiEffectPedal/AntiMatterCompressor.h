@@ -5,7 +5,7 @@ class AntiMatterCompressor {
     AntiMatterCompressor() {}
     ~AntiMatterCompressor() {}
 
-    float Process(float input);
+    void Process(float inputL, float inputR, float *outL, float *outR);
 
   private:
     bool bypassHard, bypassSoft;

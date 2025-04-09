@@ -6,7 +6,7 @@ class PitchShift {
     ~PitchShift() {}
 
     void Initialize(float sample_rate);
-    float Process(float input);
+    void Process(float inputL, float inputR, float *outL, float *outR);
 
   private:
     PitchShifter pitch;

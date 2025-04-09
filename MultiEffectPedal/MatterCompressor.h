@@ -6,7 +6,7 @@ class MatterCompressor {
     ~MatterCompressor() {}
 
     void Initialize();
-    float Process(float input);
+    void Process(float inputL, float inputR, float *outL, float *outR);
 
   private:
     Compressor comp;

@@ -1,8 +1,9 @@
 #include "DaisyDuino.h"
 #include "MatterCompressor.h"
 
-float MatterCompressor::Process(float input) {
-  return comp.Process(input);
+void MatterCompressor::Process(float inputL, float inputR, float *outL, float *outR) {
+  *outL = comp.Process(inputL);
+  *outR = comp.Process(inputR);
 }
 
 void MatterCompressor::Initialize() {

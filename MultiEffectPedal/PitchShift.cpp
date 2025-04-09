@@ -1,7 +1,7 @@
 #include "DaisyDuino.h"
 #include "PitchShift.h"
 
-float PitchShift::Process(float input) {
+void PitchShift::Process(float inputL, float inputR, float *outL, float *outR) {
   if(tick.Process()) {
     pitch.SetTransposition(transpose);
     transpose = transpose + 1;
@@ -11,7 +11,8 @@ float PitchShift::Process(float input) {
     }
   }
 
-  return pitch.Process(input);
+  *outL = pitch.Process(inputL);
+  *outR = pitch.Process(inputR);
 }
 
 

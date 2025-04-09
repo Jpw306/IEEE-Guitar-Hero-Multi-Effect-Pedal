@@ -6,7 +6,7 @@ class Reverb {
     ~Reverb() {}
 
     void Initialize(float sample_rate);
-    void Process(float input, float *outL, float *outR);
+    void Process(float inputL, float inputR, float *outL, float *outR);
 
   private:
     ReverbSc verb;

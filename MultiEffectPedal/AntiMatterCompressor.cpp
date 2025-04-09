@@ -19,6 +19,7 @@ float AntiMatterCompressor::gate(float in) {
   return in;
 }
 
-float AntiMatterCompressor::Process(float input) {
-  return softClip(1/gate(input));
+void AntiMatterCompressor::Process(float inputL, float inputR, float *outL, float *outR) {
+  *outL = softClip(1/gate(inputL));
+  *outR = softClip(1/gate(inputR));
 }

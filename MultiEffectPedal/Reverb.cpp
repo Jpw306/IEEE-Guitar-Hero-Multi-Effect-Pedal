@@ -1,8 +1,8 @@
 #include "DaisyDuino.h"
 #include "Reverb.h"
 
-void Reverb::Process(float input, float *outL, float *outR) {
-  verb.Process(input, input, outL, outR);
+void Reverb::Process(float inputL, float inputR, float *outL, float *outR) {
+  verb.Process(inputL, inputR, outL, outR);
 }
 
 void Reverb::Initialize(float sample_rate) {

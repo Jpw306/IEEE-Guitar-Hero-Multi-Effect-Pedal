@@ -1,8 +1,9 @@
 #include "DaisyDuino.h"
 #include "AutoWah.h"
 
-float AutoWah::Process(float input) {
-  return wah.Process(input);
+void AutoWah::Process(float inputL, float inputR, float *outL, float *outR) {
+  *outL = wah.Process(inputL);
+  *outR = wah.Process(inputR);
 }
 
 void AutoWah::Initialize(float sample_rate) {
