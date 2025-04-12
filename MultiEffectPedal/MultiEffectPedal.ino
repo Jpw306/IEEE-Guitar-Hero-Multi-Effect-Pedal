@@ -8,6 +8,15 @@
 #include "AutoWah.h"
 #include "Phasor.h"
 
+#include <Arduino.h>
+#include <RotaryEncoder.h>
+
+#define PIN_IN1 8
+#define PIN_IN2 9
+
+#define MAX_POS 19
+#define MIN_POS 0
+
 using namespace std;
 
 DaisyHardware hw;
@@ -33,7 +42,11 @@ Lazor DSY_SDRAM_BSS Phase;
 PitchShift PShift;
 USPSDelay USPS; 
 
-Switch button;
+// For rotary encoder
+int wrapPos = 0;
+int dir = 0;
+
+RotaryEncoder encoder(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::TWO03);
 
 void MyCallback(float **in, float **out, size_t size) {
   for (size_t i = 0; i < size; i++) {
@@ -44,7 +57,7 @@ void MyCallback(float **in, float **out, size_t size) {
 
     // Alter input signal
     if(effect) {
-      switch (curEffect) {
+      switch (wrapPos/2) {
         case 0:
           RingMod.Process(sig, sig, &outL, &outR);
           break;
@@ -64,9 +77,15 @@ void MyCallback(float **in, float **out, size_t size) {
           USPS.Process(sig, sig, &outL, &outR, 0);
           break;
         case 6:
-          AWah.Process(sig, sig, &outL, &outR);
+          USPS.Process(sig, sig, &outL, &outR, 1);
           break;
         case 7:
+          USPS.Process(sig, sig, &outL, &outR, 2);
+          break;
+        case 8:
+          AWah.Process(sig, sig, &outL, &outR);
+          break;
+        case 9:
           Phase.Process(sig, sig, &outL, &outR);
           break;
       }
@@ -98,13 +117,30 @@ void setup() {
   AWah.Initialize(sample_rate);
   Phase.Initialize(sample_rate, 4);
 
-  Serial.begin(9600);
-  button.Init(1000, false, 28, INPUT_PULLUP);
+  Serial.begin(115200);
+  //button.Init(1000, false, 28, INPUT_PULLUP);
 
   DAISY.begin(MyCallback);
 }
 
-void loop(){}
+void loop(){
+  //Rotary Encoder logic
+  static int pos = 0;
+  encoder.tick();
+
+  int newPos = encoder.getPosition();
+  if (pos != newPos) {
+    dir = (int)(encoder.getDirection());
+    pos = newPos;
+    
+    wrapPos += dir;
+  }
+
+  if(wrapPos <= MIN_POS)
+    wrapPos = MIN_POS;
+  if(wrapPos>MAX_POS)
+    wrapPos = MIN_POS;
+}
 
 // void playNote(int frequency, int duration) {
 //   osc.SetAmp(amplitude);
@@ -127,5 +163,5 @@ void loop(){}
 //   effect = !effect;
 
 //   // Toggle effect on/off LED
-//   analogWrite(15, effect * 255);
+//   //analogWrite(15, effect * 255);
 // }
