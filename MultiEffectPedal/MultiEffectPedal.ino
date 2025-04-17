@@ -36,11 +36,11 @@ AntiMatterCompressor DSY_SDRAM_BSS AMComp;
 MatterCompressor DSY_SDRAM_BSS MComp;
 Reverb DSY_SDRAM_BSS Rev;
 AutoWah DSY_SDRAM_BSS AWah;
-Lazor DSY_SDRAM_BSS Phase;
 
 // Does not work on DSY_SDRAM_BSS
 PitchShift PShift;
 USPSDelay USPS; 
+Lazor Phase;
 
 // For rotary encoder
 int wrapPos = 0;
@@ -115,9 +115,9 @@ void setup() {
   PShift.Initialize(sample_rate);
   USPS.Initialize(sample_rate);
   AWah.Initialize(sample_rate);
-  Phase.Initialize(sample_rate, 4);
+  Phase.Initialize(sample_rate, 32);
 
-  Serial.begin(115200);
+  Serial1.begin(9600);
   //button.Init(1000, false, 28, INPUT_PULLUP);
 
   DAISY.begin(MyCallback);
@@ -132,13 +132,20 @@ void loop(){
   if (pos != newPos) {
     dir = (int)(encoder.getDirection());
     pos = newPos;
+
+    if(dir == 1) {
+      Serial1.print("/1R;");
+    }
+    if(dir == -1) {
+      Serial1.print("/1L;");
+    }
     
     wrapPos += dir;
   }
 
-  if(wrapPos <= MIN_POS)
-    wrapPos = MIN_POS;
-  if(wrapPos>MAX_POS)
+  if(wrapPos < MIN_POS)
+    wrapPos = MAX_POS;
+  if(wrapPos > MAX_POS)
     wrapPos = MIN_POS;
 }
 

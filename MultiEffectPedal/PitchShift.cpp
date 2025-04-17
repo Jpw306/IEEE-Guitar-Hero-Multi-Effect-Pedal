@@ -11,8 +11,8 @@ void PitchShift::Process(float inputL, float inputR, float *outL, float *outR) {
     }
   }
 
-  *outL = pitch.Process(inputL);
-  *outR = pitch.Process(inputR);
+  *outL = pitch.Process(inputL) + inputL;
+  *outR = pitch.Process(inputR) + inputR;
 }
 
 
@@ -21,5 +21,5 @@ void PitchShift::Initialize(float sample_rate) {
 
   pitch.Init(sample_rate);
   pitch.SetTransposition(transpose);
-  tick.Init(5.0f, sample_rate);
+  tick.Init(150.0f, sample_rate);
 }

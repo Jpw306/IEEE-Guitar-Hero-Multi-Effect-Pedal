@@ -2,8 +2,8 @@
 #include "MatterCompressor.h"
 
 void MatterCompressor::Process(float inputL, float inputR, float *outL, float *outR) {
-  *outL = comp.Process(inputL);
-  *outR = comp.Process(inputR);
+  *outL = comp.Process(inputL) * 0.2;
+  *outR = comp.Process(inputR) * 0.2;
 }
 
 void MatterCompressor::Initialize() {
