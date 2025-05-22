@@ -1,3 +1,4 @@
+//Effect Headers
 #include "DaisyDuino.h"
 #include "RingModulation.h"
 #include "AntiMatterCompressor.h"
@@ -8,12 +9,26 @@
 #include "AutoWah.h"
 #include "Phasor.h"
 
+//Communication Headers
+#include "_Communication.h"
+
+//Library Headers
 #include <Arduino.h>
+//External Library, download RotaryEncoder by Matthias Hertel
 #include <RotaryEncoder.h>
 
+//Rotary Encoder Inputs
+//RE1
 #define PIN_IN1 8
 #define PIN_IN2 9
+//#define PIN_IN3 (For button functionality)
+//RE2
+//RE3
+//RE4
 
+//Stomp Switch Inputs
+
+//For tracking position of encoder (Will probably want to set this one from 0-100 as a default, and have each effect have its own limits for specific settings)
 #define MAX_POS 19
 #define MIN_POS 0
 
@@ -46,7 +61,10 @@ Lazor Phase;
 int wrapPos = 0;
 int dir = 0;
 
+//Will need to add more of these, as well as hard-code RE1's volume functionality
 RotaryEncoder encoder(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::TWO03);
+//RotaryEncoder RE1(PIN_IN)
+
 
 void MyCallback(float **in, float **out, size_t size) {
   for (size_t i = 0; i < size; i++) {
