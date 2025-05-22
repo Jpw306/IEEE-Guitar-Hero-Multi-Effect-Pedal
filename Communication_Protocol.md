@@ -1,6 +1,24 @@
 # Communication Protocol for Inter-Device Communication
 
-## To facilitate efficient and effective communication between the Arduino Uno and Daisy Seed devices, this protocol has been devised. Upon startup or a setting change of a pedal effect, the Daisy Seed will send a list of initialized or current parameters to the Uno so that the Uno may know what is currently being used and can perform operations to change settings and send this amended information back to the Daisy Seed.
+### To facilitate efficient and effective communication between the Arduino Uno and Daisy Seed devices, this protocol has been devised. Upon startup or a setting change of a pedal effect, the Daisy Seed will send a list of initialized or current parameters to the Uno so that the Uno may know what is currently being used and can perform operations to change settings and send this amended information back to the Daisy Seed.
+
+## User Input
+
+In this device package, User Input is received in a select few ways: Rotary Encoder, or Buttons. When the User interacts with a Rotary Encoder, they have 3 options. They may turn it clockwise, counter-clockwise, or push it as a button. These inputs will be read by the Daisy Seed and relayed to the Arduino Uno for UI navigation purposes. 
+
+For the purpose of inter-device communication, certain codes will be assigned to User Input actions. Each Rotary Encoder will be assigned a number designation, from left to right, with the leftmost encoder being #1. To relay that a user has turned encoder 1 to the right, the code "1R" will be sent. Below are some examples, where "X" is used as a placeholder for the encoder's designated number.
+
+Encoder turned to the Right: "XR"
+
+Encoder turned to the Left: "XL"
+
+Encoder push as a button: "XP"
+
+These codes will be sent to the UNO so that it may map the User's position in the UI and use the input to enact setting changes in Front-End menus.
+
+## Audio Effect Info Lists
+
+Each time the user opens a menu for an audio efect, the Daisy Seed must send a list to the UNO so that the UNO can know what the current audio effect's settings are, and so that it can perform arithmetic based on the User Input.
 
 This list defines what parameters will be sent in the communique when opening the menu for a pedal effect:
 
