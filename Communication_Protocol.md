@@ -16,6 +16,14 @@ Encoder push as a button: "XP"
 
 These codes will be sent to the UNO so that it may map the User's position in the UI and use the input to enact setting changes in Front-End menus.
 
+## Message Transmission
+
+Coded messages like the ones above are transmitted using the UART channels on the UNO and Daisy Seed. To facilitate proper reception of such codes, and even error detection, special characters are added to the code to signal to the devices when they should start reading and stop reading the serial stream. A forward slash ("/") is used to start, and a semicolon (";") is used to end. For special cases of multiple codes being sent all at once, a comma (",") is used to separate them. Below is an example of a User Input from Encoder 1 being sent:
+
+"/1R"
+
+On the receiving side, the device will automatically remove the slash and semicolon when reading the message, and from there a series of switch cases determine what the message is and how it should be used.
+
 ## Audio Effect Info Lists
 
 Each time the user opens a menu for an audio efect, the Daisy Seed must send a list to the UNO so that the UNO can know what the current audio effect's settings are, and so that it can perform arithmetic based on the User Input.
