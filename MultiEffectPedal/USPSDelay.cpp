@@ -20,6 +20,7 @@ void USPSDelay::Process(float inputL, float inputR, float *outL, float *outR, in
       *outR = sig_outR;
       break;
     // Ping Pong Delay
+    //Perhaps this is less delay, and more post-processing. - MA
     case 1:
       if(tick.Process()) {
         toggleOutput = !toggleOutput;
@@ -28,6 +29,7 @@ void USPSDelay::Process(float inputL, float inputR, float *outL, float *outR, in
       *outR = !toggleOutput * sig_outR;
       break;
     // Panning Delay
+    //Perhaps this is less delay, and more post-processing. - MA
     case 2:
       *outL = osc.Process() * sig_outL;
       osc.PhaseAdd(0.5);  // Phase shift for cosine
