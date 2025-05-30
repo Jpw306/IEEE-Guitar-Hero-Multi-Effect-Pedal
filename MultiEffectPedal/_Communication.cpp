@@ -79,7 +79,13 @@ How would we implement this in code without interrupting other processes? */
 //Will this return type work?
 //Read Serial data according to our preferences, return the received string to variable that calls this function
 String readSerial() {
-
+  String message;
+  if (Serial.available() > 0) {
+    if (Serial.find('/')) {
+        message.concat(Serial.readStringUntil(';'));
+        return message;
+    }
+  }
 }
 
 

@@ -1,78 +1,59 @@
-#include <Elegoo_GFX.h>    // Core graphics library
-#include <Elegoo_TFTLCD.h> // Hardware-specific library
+/*Communication Protocol for Arduino UNO with Daisy Seed.
+This file will need to be incorporated into a master file for 
+the UNO when it is complete. This file focuses on defining
+and optimizing a UNO side comm protocol in coordination with
+a Daisy Seed side comm protocol.*/
 
-#define LCD_CS A3 // Chip Select goes to Analog 3
-#define LCD_CD A2 // Command/Data goes to Analog 2
-#define LCD_WR A1 // LCD Write goes to Analog 1
-#define LCD_RD A0 // LCD Read goes to Analog 0
+//For startup handshake purposes, may be deleted later
+//bool handshakeSuccess = false;
 
-#define LCD_RESET A4 // Can alternately just connect to Arduino's reset pin
-
-#define	BLACK   0x0000
-#define	BLUE    0x001F
-#define	RED     0xF800
-#define	GREEN   0x07E0
-#define CYAN    0x07FF
-#define MAGENTA 0xF81F
-#define YELLOW  0xFFE0
-#define WHITE   0xFFFF
-
-//Custom Color Definitions
-#define ORANGE 0xFA32
-
-Elegoo_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
-
-//Serial Communication Input Buffer
-String DebugInput = "";
-String UserInput = "";
-bool handshakeSuccess = false;
-
-//AltSoftSerial altSerial;
-
-/* Custom Function Declarations*/
-void drawLogo();
-void drawMainMenu();
-void drawUserSelect();
-
-
+//Function declarations, will need to be moved to .h file
+String readSerial();
 void serialEcho(String echo);
-bool startupHandshake(int trylimit);
-
-
-
+void decodeInput();
 
 //Setup Code to run before Main Loop
 void setup(void) {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
-  
-  tft.reset();
-  uint16_t identifier = 0x9341;
-  tft.begin(identifier);
-
-  tft.fillScreen(BLACK);
-  tft.setCursor(0,0);
-
-  //TFT is 240x320 pixels (Width corresponds to short side by default)
-
-
-  // Load Logo Image 
-  drawLogo();
-
-  // Perform Handshake
-  handshakeSuccess = startupHandshake(3);
-  if (handshakeSuccess) {
-    //wait a few seconds then load main menu
-    delay(3000);
-    drawMainMenu();
-  } else {
-    //display error message on logo screen
-    tft.setCursor(120, 300);
-    tft.println("Error: Communication Failure");
-    //Put UNO to sleep (See Arduino Low Power Library)
-  }
 }
 
+/*Rather than directly drawing grapchics from Comm protocol, 
+  Comm Protocol should post messages, and the Graphics
+  Protocol can decide what to draw from there. For example...
+
+  On startup UNO will initiate a handshake procedure with
+  Daisy Seed to make sure everything is working, and while
+  this happens, should display a startup sequence logo on the
+  LCD. It can do this by "posting a message" that the Graphics
+  Protocol will then read and perform this action with.
+
+  When the handshake is complete, a message can be posted to tell
+  the Graphics Protocol to display menu as normal.
+
+  The LCD runs asynchronously, and will keep whatever's on the 
+  screen until told to do otherwise. The message system would be 
+  efficient because it would only force the LCD to update when
+  a new message is posted, rather than having code to constantly
+  chack whether an update is required. Messages should not describe 
+  graphical content, but rather directions to be followed. However, 
+  these directions will probably depend on previous messages as well?
+  */
+
+/*
+  // Perform Handshake, Will probably want to reorganize this
+  handshakeSuccess = startupHandshake(3);
+  if (handshakeSuccess) {
+    //Send message to Load Logo Image 
+    //Begin Handshake
+    //wait a few seconds, confirm response, or error
+    //drawMainMenu(); Post message to draw main menu as normal
+  } else {
+    //send message to display error message on logo screen
+    //Put UNO to sleep? (See Arduino Low Power Library)
+  }
+}
+*/
 
 
 
@@ -82,61 +63,73 @@ void loop(void) {
 }
 
 
-
-
-
-
+//Check for Serial Communications, Return received message
+String readSerial() {
+  String message;
+  if (Serial.available() > 0) {
+    if (Serial.find('/')) {
+        message.concat(Serial.readStringUntil(';'));
+        return message;
+    }
+  }
+}
 
 
 //Establish Connection with Daisy Seed
-bool startupHandshake(int trylimit) {
-  /* To be called in void setup()
-  Logo can be shown on screen while UNO tries to establish
-  connection with DS, will wait a bit then try 3 times to 
-  connect.
-  */
+void estConn() {
+  // To be called in void setup()
+  //Logo can be shown on screen while UNO tries to establish
+  //connection with DS, will wait a bit then try 3 times to 
+  //connect.
 
   // Send a start code, wait for a response from DS
   // If no response, wait then try again
-  // On 3rd fail, display error on screen, 'shut down'
+  // On 3rd fail, tell Graphics Protocol to display error message
   // If valid response, continue as normal
-  for (int i = 0; i < trylimit; i++) {
+
+  //Message Container
+  String ConnMessage = "";
+
+  //try 3 times to establish connection
+  for (int i = 3; i > 0; i--) {
     delay(1000); //Wait 1 second
     Serial.print("/H;");  //Send Handshake
     
-    int j = 1000;         //Try to receive Acknowledge a few times
+    int j = 1000; //Try to receive Acknowledge a few times
     while (j > 0) {
-      if (Serial.available() > 0) { //If something received, stop waiting
-        if (Serial.find('/')) {
-          DebugInput.concat(Serial.readStringUntil(';')); //Store received code
-          return true;  //Return success
-        }
+      ConnMessage = readSerial();
+      if (ConnMessage != "") {
+        decodeM(); 
       } else {j--;}
+      //since decodeM will handle the content of the message, 
+      //this function doesn't need to return anything.
     }
   }
-  // If nothing received after 3 tries, return fail state
-  
-  return false;
+  // If nothing received after 3 tries, call function
+  //in error section of decodeM
 }
-
-//Check for Serial Communications
-void readSerial() {
-  if (Serial.available() > 0) {
-    if (Serial.find('/')) {
-        UserInput.concat(Serial.readStringUntil(';'));
-        decodeInput();
-    }
-  }
-}
-
-
 
 
 //Decode User Input from Daisy Seed Rotary Encoders or Serial Plotter
-void decodeInput() {
+void decodeM(String message) {
   //Encoder input should be sent as a two character code '1R', '2L', '3B', ...
   //if (UserInput == "LEDON") {
-  switch (UserInput[0]) {
+
+  //Decode 1st Character, used to determine what kind of message received
+  switch (message[0]) {
+    //Cases should be sorted in frequency order (Most frequent actions at top)
+    case 'UI': //Consider changing to just 'U' or just 'I'. Or leave as is for clarity
+      //send to another switch statement to figure out what the user input was, see old test code below
+      break;
+    case 'E': //Error code, UART is working but something else isn't (I dunno what but...)
+      //Tell LCD to display an error message
+    case 'A': //Acknowledge Code. Will probably only run once, so put at bottom.
+      //estConn success, tell the world!
+      break;
+  }
+  
+  /* Old Test code, use as template
+  switch (message[0]) {
     case '1': //Rotary Encoder 1
       //Tell UNO what encoder was used
       break;
@@ -151,40 +144,20 @@ void decodeInput() {
       break;
   }
 
-  switch (UserInput[1]) {
+  switch (message[1]) {
     case 'L': //Turned Left
       digitalWrite(LED_BUILTIN, HIGH);
       break;
     case 'R': //Turned Right
       digitalWrite(LED_BUILTIN, LOW);
       break;
-    case 'B': //Button
+    case 'P': //Push
 
       break;
     default:  //No Input/Error
       
       break;
-  }
-  UserInput = "";
+  }*/
 }
 
-//Echo Received Serial Communications - For Debug Purposes
-void serialEcho(String echo) {
-  Serial.println(echo);
-  //altSerial.println(echo);
-}
 
-void drawLogo() {
-  tft.fillScreen(BLACK);
-  tft.setCursor(0,0);
-
-  //tft.drawBitmap();
-}
-
-void drawMainMenu() {
-
-}
-
-void drawUserSelect() {
-
-}
