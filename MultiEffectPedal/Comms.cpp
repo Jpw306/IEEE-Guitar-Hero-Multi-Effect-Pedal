@@ -1,5 +1,5 @@
 #include "DaisyDuino.h"
-#include "_Communication.h"
+#include "Comms.h"
 
 /*  UPDATE TO COMM PROTOCOL
 There are a few different message types being sent:
@@ -90,7 +90,7 @@ String readSerial() {
 
 
 //Send effect stats to UNO
-void sendStats( stats_to_send) {
+void sendStats(stats_to_send) {
   //Should this name be more descriptive?
 }
 
