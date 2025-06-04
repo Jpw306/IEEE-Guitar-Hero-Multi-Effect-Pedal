@@ -7,9 +7,18 @@ void RingModulation::Process(float inputL, float inputR, float *outL, float *out
   *outR = inputR * carrier_signal;
 }
 
-void RingModulation::Initialize(float sample_rate) {
+void RingModulation::Initialize(float sample_rate, int mode) {
   carrier.Init(sample_rate);
   carrier.SetFreq(311);
   carrier.SetAmp(1.0);
   carrier.SetWaveform(carrier.WAVE_SIN);
+  setMode(mode)
+}
+
+const char* RingModulation::GetName() const {
+    return "Ring Modulation";
+}
+
+int RingModulation::GetID() const {
+    return 7;
 }

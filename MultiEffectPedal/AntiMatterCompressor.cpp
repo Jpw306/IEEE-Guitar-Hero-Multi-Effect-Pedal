@@ -1,6 +1,13 @@
 #include "DaisyDuino.h"
 #include "AntiMatterCompressor.h"
 
+
+AntiMatterCompressor::AntiMatterCompressor() {}
+
+AntiMatterCompressor::Initialize(float sample_rate, int mode){
+  setMode(mode);
+}
+
 float AntiMatterCompressor::hardClip(float in) {
   in = in > 1.f ? 1.f : in;
   in = in < -1.f ? -1.f : in;
@@ -20,6 +27,6 @@ float AntiMatterCompressor::gate(float in) {
 }
 
 void AntiMatterCompressor::Process(float inputL, float inputR, float *outL, float *outR) {
-  *outL = softClip(1/gate(inputL)) * 0.015;
-  *outR = softClip(1/gate(inputR)) * 0.015;
+  *outL = softClip(1/gate(inputL));
+  *outR = softClip(1/gate(inputR));
 }

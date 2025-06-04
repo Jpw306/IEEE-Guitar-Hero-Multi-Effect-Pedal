@@ -14,7 +14,7 @@ void Lazor::Process(float inputL, float inputR, float *outL, float *outR) {
     *outR = outputR;
 }
 
-void Lazor::Initialize(float sample_rate, int numFilters){
+void Lazor::Initialize(float sample_rate, int numFilters, int mode){
     filters = numFilters; 
     lfo.SetWaveform(lfo.WAVE_SIN);
     lfo.SetFreq(1);
@@ -23,4 +23,12 @@ void Lazor::Initialize(float sample_rate, int numFilters){
         buff[i] = 0.0f;
     }
     wire.Init(sample_rate, buff, (int)9600);
+}
+
+const char* Lazor::GetName() const {
+    return "Lazor";
+}
+
+int Lazor::GetID() const {
+    return 4;
 }

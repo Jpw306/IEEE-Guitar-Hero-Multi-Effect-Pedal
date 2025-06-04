@@ -1,12 +1,15 @@
 #include "DaisyDuino.h"
+#include "Effect.h"
 
-class Lazor{
+class Lazor : public Effect{
     public:
         Lazor() {}
         ~Lazor() {}
 
-        void Initialize(float sample_rate, int numFilters);
-        void Process(float inputL, float inputR, float *outL, float *outR);
+        void Initialize(float sample_rate, int num_filters, int mode) override;
+        void Process(float inputL, float inputR, float *outL, float *outR, int mode) override;
+        const char* GetName() const override;
+        int GetID() const override;
 
     private:
         Oscillator lfo;

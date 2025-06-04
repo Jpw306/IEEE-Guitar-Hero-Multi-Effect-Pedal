@@ -1,14 +1,19 @@
 #include "DaisyDuino.h"
+#include "Effect.h"
 
-class AntiMatterCompressor {
+class AntiMatterCompressor : public Effect{
   public:
-    AntiMatterCompressor() {}
-    ~AntiMatterCompressor() {}
+    AntiMatterCompressor();
+    ~AntiMatterCompressor();
 
-    void Process(float inputL, float inputR, float *outL, float *outR);
+    void Initialize(float sample_rate, int mode) override;
+    void Process(float inputL, float inputR, float *outL, float *outR, int mode) override;
+    const char* GetName() const override;
+    int GetID() const override;
 
   private:
-    bool bypassHard, bypassSoft;
+    bool bypassHard = false;
+    bool bypassSoft = false;
 
     float hardClip(float in);
     float softClip(float in);

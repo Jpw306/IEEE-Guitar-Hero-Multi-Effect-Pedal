@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 //Effect Headers
+=======
+#include "Effect.h"
+>>>>>>> Stashed changes
 #include "DaisyDuino.h"
 #include "RingModulation.h"
 #include "AntiMatterCompressor.h"
@@ -16,8 +20,13 @@
 //External Library, download RotaryEncoder by Matthias Hertel
 #include <RotaryEncoder.h>
 
+<<<<<<< Updated upstream
 //Rotary Encoder Inputs
 //RE1
+=======
+#include<vector>
+
+>>>>>>> Stashed changes
 #define PIN_IN1 8
 #define PIN_IN2 9
 //#define PIN_IN3 (For button functionality)
@@ -45,6 +54,7 @@ int notes[3] = {261, 329, 392};  // C Arpeggio in hz (C, E, G)
 int curEffect = 0;
 
 // Works on DSY_SDRAM_BSS
+<<<<<<< Updated upstream
 RingModulation DSY_SDRAM_BSS RingMod;
 AntiMatterCompressor DSY_SDRAM_BSS AMComp;
 MatterCompressor DSY_SDRAM_BSS MComp;
@@ -55,6 +65,22 @@ AutoWah DSY_SDRAM_BSS AWah;
 PitchShift PShift;
 USPSDelay USPS; 
 Lazor Phase;
+=======
+static RingModulation DSY_SDRAM_BSS RingMod;
+static AntiMatterCompressor DSY_SDRAM_BSS AMComp;
+static MatterCompressor DSY_SDRAM_BSS MComp;
+static Reverb DSY_SDRAM_BSS Rev;
+static AutoWah DSY_SDRAM_BSS AWah;
+static Lazor DSY_SDRAM_BSS Phase;
+
+// Does not work on DSY_SDRAM_BSS
+static PitchShift PShift;
+static USPSDelay USPS; 
+
+// Vector to store all effects
+// Iterate across all members, check if effect is active, if so, perform effect.process
+std::vector<Effect*> allEffects;
+>>>>>>> Stashed changes
 
 // For rotary encoder
 int wrapPos = 0;
@@ -72,45 +98,12 @@ void MyCallback(float **in, float **out, size_t size) {
     float outL = sig;
     float outR = sig;
 
-    // Alter input signal
-    if(effect) {
-      switch (wrapPos/2) {
-        case 0:
-          RingMod.Process(sig, sig, &outL, &outR);
-          break;
-        case 1:
-          AMComp.Process(sig, sig, &outL, &outR);
-          break;
-        case 2:
-          MComp.Process(sig, sig, &outL, &outR);
-          break;
-        case 3:
-          Rev.Process(sig, sig, &outL, &outR);
-          break;
-        case 4:
-          PShift.Process(sig, sig, &outL, &outR);
-          break;
-        case 5:
-          USPS.Process(sig, sig, &outL, &outR, 0);
-          break;
-        case 6:
-          USPS.Process(sig, sig, &outL, &outR, 1);
-          break;
-        case 7:
-          USPS.Process(sig, sig, &outL, &outR, 2);
-          break;
-        case 8:
-          AWah.Process(sig, sig, &outL, &outR);
-          break;
-        case 9:
-          Phase.Process(sig, sig, &outL, &outR);
-          break;
-      }
-    }
-
     // Output signal
     out[0][i] = outL;
     out[1][i] = outR;
+
+
+  
   }
 }
 
@@ -126,6 +119,7 @@ void setup() {
   osc.SetAmp(5.0);
   osc.SetWaveform(osc.WAVE_SAW);
 
+<<<<<<< Updated upstream
   RingMod.Initialize(sample_rate);
   MComp.Initialize();
   Rev.Initialize(sample_rate);
@@ -133,11 +127,49 @@ void setup() {
   USPS.Initialize(sample_rate);
   AWah.Initialize(sample_rate);
   Phase.Initialize(sample_rate, 32);
+=======
+  RingMod.Initialize(sample_rate, 0);
+  AMComp.Initialize(sample_rate, 0);
+  MComp.Initialize(sample_rate, 0);
+  Rev.Initialize(sample_rate, 0);
+  PShift.Initialize(sample_rate, 0);
+  USPS.Initialize(sample_rate, 0);
+  AWah.Initialize(sample_rate, 0);
+  Phase.Initialize(sample_rate, 4, 0);
+
+  allEffects.push_back(&Rev);
+  allEffects.push_back(&USPS);
+  allEffects.push_back(&AWah);
+  allEffects.push_back(&Phase);
+  allEffects.push_back(&PShift);
+  allEffects.push_back(&RingMod);
+  allEffects.push_back(&MComp);
+  allEffects.push_back(&AMComp);
+
+
+  SelectEffects();
+
+  std::vector<std::string> effectsList;
+
+  // Alter input signal
+  for (auto effect : allEffects)
+  {
+    if (effect->active)
+    {
+      effect->Process(sig, sig, &outL, &outR, effect->getMode());
+      effectsList.push_back(effect->GetName());
+    }
+  }
+>>>>>>> Stashed changes
 
   Serial1.begin(9600);
   //button.Init(1000, false, 28, INPUT_PULLUP);
 
   DAISY.begin(MyCallback);
+}
+void SelectEffects(){
+  selectButton.update();
+  int selectedEffect = wrapPos / 2;
 }
 
 void loop(){

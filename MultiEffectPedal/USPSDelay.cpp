@@ -39,7 +39,7 @@ void USPSDelay::Process(float inputL, float inputR, float *outL, float *outR, in
   }
 }
 
-void USPSDelay::Initialize(float sample_rate) {
+void USPSDelay::Initialize(float sample_rate, int mode) {
   delL.SetDelay(sample_rate * 0.25f);
   delR.SetDelay(sample_rate * 0.25f);
 
@@ -51,4 +51,13 @@ void USPSDelay::Initialize(float sample_rate) {
 
   toggleOutput = true;
   tick.Init(5.0f, sample_rate);
+  setMode(mode)
+}
+
+const char* USPSDelay::GetName() const {
+    return "USPS Delay";
+}
+
+int USPSDelay::GetID() const {
+    return 8;
 }
