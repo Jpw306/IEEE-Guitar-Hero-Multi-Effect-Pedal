@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
-//Effect Headers
-=======
-#include "Effect.h"
->>>>>>> Stashed changes
 #include "DaisyDuino.h"
 #include "RingModulation.h"
 #include "AntiMatterCompressor.h"
@@ -20,13 +15,6 @@
 //External Library, download RotaryEncoder by Matthias Hertel
 #include <RotaryEncoder.h>
 
-<<<<<<< Updated upstream
-//Rotary Encoder Inputs
-//RE1
-=======
-#include<vector>
-
->>>>>>> Stashed changes
 #define PIN_IN1 8
 #define PIN_IN2 9
 //#define PIN_IN3 (For button functionality)
@@ -54,18 +42,6 @@ int notes[3] = {261, 329, 392};  // C Arpeggio in hz (C, E, G)
 int curEffect = 0;
 
 // Works on DSY_SDRAM_BSS
-<<<<<<< Updated upstream
-RingModulation DSY_SDRAM_BSS RingMod;
-AntiMatterCompressor DSY_SDRAM_BSS AMComp;
-MatterCompressor DSY_SDRAM_BSS MComp;
-Reverb DSY_SDRAM_BSS Rev;
-AutoWah DSY_SDRAM_BSS AWah;
-
-// Does not work on DSY_SDRAM_BSS
-PitchShift PShift;
-USPSDelay USPS; 
-Lazor Phase;
-=======
 static RingModulation DSY_SDRAM_BSS RingMod;
 static AntiMatterCompressor DSY_SDRAM_BSS AMComp;
 static MatterCompressor DSY_SDRAM_BSS MComp;
@@ -80,7 +56,6 @@ static USPSDelay USPS;
 // Vector to store all effects
 // Iterate across all members, check if effect is active, if so, perform effect.process
 std::vector<Effect*> allEffects;
->>>>>>> Stashed changes
 
 // For rotary encoder
 int wrapPos = 0;
@@ -119,15 +94,6 @@ void setup() {
   osc.SetAmp(5.0);
   osc.SetWaveform(osc.WAVE_SAW);
 
-<<<<<<< Updated upstream
-  RingMod.Initialize(sample_rate);
-  MComp.Initialize();
-  Rev.Initialize(sample_rate);
-  PShift.Initialize(sample_rate);
-  USPS.Initialize(sample_rate);
-  AWah.Initialize(sample_rate);
-  Phase.Initialize(sample_rate, 32);
-=======
   RingMod.Initialize(sample_rate, 0);
   AMComp.Initialize(sample_rate, 0);
   MComp.Initialize(sample_rate, 0);
@@ -160,12 +126,15 @@ void setup() {
       effectsList.push_back(effect->GetName());
     }
   }
->>>>>>> Stashed changes
 
   Serial1.begin(9600);
   //button.Init(1000, false, 28, INPUT_PULLUP);
 
   DAISY.begin(MyCallback);
+}
+void SelectEffects(){
+  selectButton.update();
+  int selectedEffect = wrapPos / 2;
 }
 void SelectEffects(){
   selectButton.update();

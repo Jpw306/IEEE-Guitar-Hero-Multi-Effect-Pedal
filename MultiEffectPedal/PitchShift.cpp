@@ -22,6 +22,7 @@ void PitchShift::Initialize(float sample_rate, int mode) {
   pitch.Init(sample_rate);
   pitch.SetTransposition(transpose);
   tick.Init(5.0f, sample_rate);
+  setMode(mode)
 }
 
 const char* PitchShift::GetName() const {

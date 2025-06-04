@@ -26,7 +26,15 @@ float AntiMatterCompressor::gate(float in) {
   return in;
 }
 
-void AntiMatterCompressor::Process(float inputL, float inputR, float *outL, float *outR) {
+void AntiMatterCompressor::Process(float inputL, float inputR, float *outL, float *outR, int mode) {
   *outL = softClip(1/gate(inputL));
   *outR = softClip(1/gate(inputR));
+}
+
+const char* AntiMatterCompressor::GetName() const {
+    return "AntiMatterCompressor";
+}
+
+int AntiMatterCompressor::GetID() const {
+    return 1;
 }
