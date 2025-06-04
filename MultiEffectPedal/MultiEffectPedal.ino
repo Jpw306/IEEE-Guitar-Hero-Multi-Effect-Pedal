@@ -29,7 +29,7 @@
 //Stomp Switch Inputs
 
 //For tracking position of encoder (Will probably want to set this one from 0-100 as a default, and have each effect have its own limits for specific settings)
-#define MAX_POS 19
+#define MAX_POS 9
 #define MIN_POS 0
 
 using namespace std;
@@ -58,8 +58,8 @@ USPSDelay USPS;
 Lazor Phase;
 
 // For rotary encoder
-int wrapPos = 0;
-int dir = 0;
+int pos1 = 0;
+int dir1 = 0;
 
 //Will need to add more of these, as well as hard-code RE1's volume functionality
 RotaryEncoder encoder1(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::TWO03);
@@ -75,7 +75,7 @@ void MyCallback(float **in, float **out, size_t size) {
 
     // Alter input signal
     if(effect) {
-      switch (wrapPos/2) {
+      switch (pos1) {
         case 0:
           RingMod.Process(sig, sig, &outL, &outR);
           break;
@@ -143,32 +143,22 @@ void setup() {
 
 void loop(){
   //Rotary Encoder logic
-  static int pos = 0;
   encoder1.tick();
+  dir1 = (int)(encoder1.getDirection());
 
-  //We created a few new variables to keep track of a change in position,
-  //however, the library already does that
-  int newPos = encoder1.getPosition();
-  if (pos != newPos) {
-    dir = (int)(encoder1.getDirection());
-    pos = newPos;
-
-    if(dir == 1) {
+  switch (dir1) {
+    case 0:
+      break;
+    case 1: //Clockwise
       Serial1.print("/I1R;");
-    }
-    if(dir == -1) {
+      pos1 += dir1;
+      break;
+    case -1: //Counter-Clockwise
       Serial1.print("/I1L;");
-    }
-    
-    wrapPos += dir; // pos and newPos aren't even used, just the direction
-    //Essentially, the entire first part of this code can be removed
-    //Since all we have to find out is direction
+      pos1 += dir1;
   }
-//WrapPos is the value that actually gets used
-  if(wrapPos < MIN_POS)
-    wrapPos = MAX_POS;
-  if(wrapPos > MAX_POS)
-    wrapPos = MIN_POS;
+
+
 }
 
 // void playNote(int frequency, int duration) {
