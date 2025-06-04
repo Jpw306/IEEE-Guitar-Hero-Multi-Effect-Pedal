@@ -190,9 +190,9 @@ How would we implement this in code without interrupting other processes? */
 
 
 //Send effect stats to UNO
-void sendStats() {
+/*void sendStats() {
   //Should this name be more descriptive?
-}
+}*/
 
 //Receive changes to statList
 void receiveStats() {

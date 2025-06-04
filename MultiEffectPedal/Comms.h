@@ -14,7 +14,7 @@ void estConn();
 
 
 //Send effect stats to UNO
-void sendStats();
+//void sendStats();
 
 //Receive changes to statList
 void receiveStats();
