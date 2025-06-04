@@ -17,13 +17,9 @@ String readSerial() {
 
 //Establish Connection with Daisy Seed
 void estConn() {
-  // To be called in void setup()
-  //Logo can be shown on screen while UNO tries to establish
-  //connection with DS, will wait a bit then try 3 times to 
-  //connect.
-
+  //Try 3 times to establish connection with DS
+  
   // Send a start code, wait for a response from DS
-  // If no response, wait then try again
   // On 3rd fail, tell Graphics Protocol to display error message
   // If valid response, continue as normal
 
@@ -52,15 +48,43 @@ void estConn() {
 
 
 //Decode User Input from Daisy Seed Rotary Encoders or Serial Plotter
-void decodeM(String message) {
+void decodeM(String message) { //maybe pass message by reference? Message could be received, immediately decoded/used, then on next loop received again
   //Encoder input should be sent as a two character code '1R', '2L', '3B', ...
   //if (UserInput == "LEDON") {
+
+  // Format: Type, xx, xx, xx
 
   //Decode 1st Character, used to determine what kind of message received
   switch (message[0]) {
     //Cases should be sorted in frequency order (Most frequent actions at top)
-    case 'UI': //Consider changing to just 'U' or just 'I'. Or leave as is for clarity
+    case 'I': //I for Input
       //Find out what UI was, do something
+      //Format: Type, Encoder #, Action
+      //Perhaps a more efficient code could be devised?
+      switch (message[1]) {
+        case '1': //Rotary Encoder 1
+          switch (message[3]) {
+            case 'L':
+
+              break;
+            case 'R':
+              break;
+            case 'P':
+              break;
+            default:
+              break;
+          }
+          break;
+        case '2': //Rotary Encoder 2
+        
+          break;
+        case '3': //Rotary Encoder 3
+        
+          break;
+        default:
+
+          break;
+      }
       break;
     case 'E': //Error code, UART is working but something else isn't (I dunno what but...)
       //Find out what's wrong, Tell LCD to display an error message.

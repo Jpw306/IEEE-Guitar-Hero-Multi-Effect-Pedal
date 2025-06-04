@@ -14,6 +14,8 @@ String Message = ""; //Main message container
 void setup(void) {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(9600);
+  //Show Logo on screen
+  estConn();
 }
 
 /*Rather than directly drawing graphics from Comm protocol, 
@@ -58,6 +60,8 @@ void setup(void) {
 //Main loop
 void loop(void) {
   Message = readSerial();
+  decodeM(Message);
+  
 }
 
 

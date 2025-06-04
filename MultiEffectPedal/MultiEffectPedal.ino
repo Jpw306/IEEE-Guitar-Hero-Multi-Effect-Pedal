@@ -62,7 +62,7 @@ int wrapPos = 0;
 int dir = 0;
 
 //Will need to add more of these, as well as hard-code RE1's volume functionality
-RotaryEncoder encoder(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::TWO03);
+RotaryEncoder encoder1(PIN_IN1, PIN_IN2, RotaryEncoder::LatchMode::TWO03);
 //RotaryEncoder RE1(PIN_IN)
 
 
@@ -146,21 +146,25 @@ void loop(){
   static int pos = 0;
   encoder.tick();
 
-  int newPos = encoder.getPosition();
+  //We created a few new variables to keep track of a change in position,
+  //however, the library already does that
+  int newPos = encoder1.getPosition();
   if (pos != newPos) {
-    dir = (int)(encoder.getDirection());
+    dir = (int)(encoder1.getDirection());
     pos = newPos;
 
     if(dir == 1) {
-      Serial1.print("/1R;");
+      Serial1.print("/I1R;");
     }
     if(dir == -1) {
-      Serial1.print("/1L;");
+      Serial1.print("/I1L;");
     }
     
-    wrapPos += dir;
+    wrapPos += dir; // pos and newPos aren't even used, just the direction
+    //Essentially, the entire first part of this code can be removed
+    //Since all we have to find out is direction
   }
-
+//WrapPos is the value that actually gets used
   if(wrapPos < MIN_POS)
     wrapPos = MAX_POS;
   if(wrapPos > MAX_POS)
