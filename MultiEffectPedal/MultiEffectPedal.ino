@@ -144,7 +144,7 @@ void setup() {
 void loop(){
   //Rotary Encoder logic
   static int pos = 0;
-  encoder.tick();
+  encoder1.tick();
 
   //We created a few new variables to keep track of a change in position,
   //however, the library already does that

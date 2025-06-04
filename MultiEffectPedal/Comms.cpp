@@ -133,7 +133,7 @@ void decodeM(String message) {
 
 
 //Confirm Working Communication with UNO on Startup
-bool estConn() {
+void estConn() {
   // To be called in void setup()
   //try to connect with UNO, receive Start message from UNO
   // Send an Acknowledge, wait for a response from UNO
@@ -190,7 +190,7 @@ How would we implement this in code without interrupting other processes? */
 
 
 //Send effect stats to UNO
-void sendStats(stats_to_send) {
+void sendStats() {
   //Should this name be more descriptive?
 }
 
