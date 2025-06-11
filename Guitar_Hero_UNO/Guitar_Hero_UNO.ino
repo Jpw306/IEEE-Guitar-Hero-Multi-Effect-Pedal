@@ -5,7 +5,14 @@ and optimizing a UNO side comm protocol in coordination with
 a Daisy Seed side comm protocol.*/
 
 #include "Comms.h"
+#include "GH_graphics.h"
 
+//Graphics
+//Pin Definitions for SPI Protocol (We can change these according to UNO Pinout)
+#define TFT_CS        10
+#define TFT_RST        9 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC         8
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 
 //Global Variable Declarations
 String Message = ""; //Main message container
@@ -13,9 +20,16 @@ String Message = ""; //Main message container
 //Setup Code to run before Main Loop
 void setup(void) {
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(9600);
+  Serial.begin(9600); //May want to increase this on both devices
+  
+  
+  tft.initR(INITR_BLACKTAB);      // Init ST7735S chip, black tab
+  tft.setRotation(0);             //Rotation increments by 1, change numbers until we find the one we want
   //Show Logo on screen
-  estConn();
+  //tft.drawBitmap();               //Need to include Bitmap files for images
+
+  Message = estConn();
+  decodeM(Message);
 }
 
 /*Rather than directly drawing graphics from Comm protocol, 

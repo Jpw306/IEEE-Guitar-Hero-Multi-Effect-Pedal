@@ -16,7 +16,7 @@ String readSerial() {
 
 
 //Establish Connection with Daisy Seed
-void estConn() {
+String estConn() {
   //Try 3 times to establish connection with DS
   
   // Send a start code, wait for a response from DS
@@ -35,61 +35,100 @@ void estConn() {
     while (j > 0) {
       ConnMessage = readSerial();
       if (ConnMessage != "") {
-        decodeM(ConnMessage); 
+        return ConnMessage; //If message received, return
       } else {j--;}
-      //since decodeM will handle the content of the message, 
-      //this function doesn't need to return anything.
     }
   }
-  // If nothing received after 3 tries, call function
-  //in error section of decodeM
+  // If nothing received after 3 tries, return error message
+  return "/E0;"; //Error Message 0, total failure in comunication between devices
 }
 
 
 
 //Decode User Input from Daisy Seed Rotary Encoders or Serial Plotter
-void decodeM(String message) { //maybe pass message by reference? Message could be received, immediately decoded/used, then on next loop received again
+void decodeM(String m) { //maybe pass message by reference? Message could be received, immediately decoded/used, then on next loop received again
   //Encoder input should be sent as a two character code '1R', '2L', '3B', ...
   //if (UserInput == "LEDON") {
 
   // Format: Type, xx, xx, xx
 
   //Decode 1st Character, used to determine what kind of message received
-  switch (message[0]) {
+  switch (m[0]) {
     //Cases should be sorted in frequency order (Most frequent actions at top)
     case 'I': //I for Input
       //Find out what UI was, do something
       //Format: Type, Encoder #, Action
       //Perhaps a more efficient code could be devised?
-      switch (message[1]) {
+      switch (m[1]) {
         case '1': //Rotary Encoder 1
-          switch (message[3]) {
+          switch (m[2]) {
             case 'L':
 
               break;
             case 'R':
+
               break;
             case 'P':
+
               break;
+
             default:
               break;
           }
           break;
         case '2': //Rotary Encoder 2
-        
+          switch (m[2]) {
+            case 'L':
+
+              break;
+            case 'R':
+
+              break;
+            case 'P':
+
+              break;
+              
+            default:
+              break;
+          }
           break;
         case '3': //Rotary Encoder 3
-        
+          switch (m[2]) {
+            case 'L':
+
+              break;
+            case 'R':
+
+              break;
+            case 'P':
+
+              break;
+              
+            default:
+              break;
+          }
           break;
+
         default:
 
           break;
       }
       break;
+
     case 'E': //Error code, UART is working but something else isn't (I dunno what but...)
       //Find out what's wrong, Tell LCD to display an error message.
+      switch (m[1]) {
+        case '0':
+          //call graphics to display error message and short description
+          break;
+
+        default:
+          break;
+      }
+
     case 'A': //Acknowledge Code. Will probably only run once, so put at bottom.
       //estConn success, tell the world!
+      //Boot up as normal
       break;
   }
   
