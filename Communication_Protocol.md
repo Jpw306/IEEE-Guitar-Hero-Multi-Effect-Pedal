@@ -67,6 +67,8 @@ Arduino Uno	--> “/SET P1_XXX;”
 ## Message Designations and Error List
 
 I - For Input, used to show that a message carries user input.
+
 E - For Error, used to show that a message carries error information.
+
 A - For Acknowledge, used exclusively upon startup to make sure that both devices can communicate with each other properly.
 
