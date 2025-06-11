@@ -18,11 +18,11 @@ These codes will be sent to the UNO so that it may map the User's position in th
 
 ## Message Transmission
 
-Coded messages like the ones above are transmitted using the UART channels on the UNO and Daisy Seed. To facilitate proper reception of such codes, and even error detection, special characters are added to the code to signal to the devices when they should start reading and stop reading the serial stream. A forward slash ("/") is used to start, and a semicolon (";") is used to end. For special cases of multiple codes being sent all at once, a comma (",") is used to separate them. Below is an example of a User Input from Encoder 1 being sent:
+Coded messages like the ones above are transmitted using the UART channels on the UNO and Daisy Seed. To facilitate proper reception of such codes, and even error detection, special characters are added to the code to signal to the devices when they should start reading and stop reading the serial stream. A forward slash ("/") is used to start, and a semicolon (";") is used to end. For special cases of multiple codes being sent all at once, a comma (",") is used to separate them. An extra identifier is added to the beginning of the code after the forward slash to help distinguish what kind of message is being received. Below is an example of a User Input from Encoder 1 being sent:
 
-"/1R"
+"/I1R;"
 
-On the receiving side, the device will automatically remove the slash and semicolon when reading the message, and from there a series of switch cases determine what the message is and how it should be used.
+On the receiving side, the device will automatically remove the slash and semicolon when reading the message, use the identifier to determine what kind of message it is, and from there a series of switch cases determine how it should be used.
 
 ## Audio Effect Info Lists
 
@@ -64,4 +64,9 @@ Arduino Uno:		Will perform calculations based on input (R = +1)
 Arduino Uno	--> “/SET P1_XXX;”
 
 
+## Message Designations and Error List
+
+I - For Input, used to show that a message carries user input.
+E - For Error, used to show that a message carries error information.
+A - For Acknowledge, used exclusively upon startup to make sure that both devices can communicate with each other properly.
 
